@@ -1,0 +1,1706 @@
+# React Notes
+
+---
+
+## Table of Contents
+
+1. [Syllabus](#syllabus)
+2. [React Local Setup](#react-local-setup)
+3. [React Project with TypeScript](#react-project-with-typescript)
+4. [create-react-app](#create-react-app)
+5. [NPX](#npx)
+6. [React App with Vite](#react-app-with-vite)
+7. [What React Is](#what-react-is)
+8. [React is NOT a Framework](#react-is-not-a-framework)
+9. [React Features](#react-features)
+10. [DOM and Virtual DOM](#dom-and-virtual-dom)
+11. [React Reconciliation](#react-reconciliation)
+12. [React Project Structure](#react-project-structure)
+13. [JSX](#jsx)
+14. [React Element](#react-element)
+15. [Module Systems & Imports/Exports](#module-systems--importsexports)
+16. [Components](#components)
+17. [React.StrictMode](#reactstrictmode)
+18. [Bootstrap & Icons](#bootstrap--icons)
+19. [Fragments](#fragments)
+20. [Data Binding & CSS](#data-binding--css)
+21. [Conditional Rendering](#conditional-rendering)
+22. [Lists and Keys](#lists-and-keys)
+23. [Props](#props)
+24. [State](#state)
+25. [React Events](#react-events)
+26. [Component Communication](#component-communication)
+27. [PureComponent & Memo](#purecomponent--memo)
+28. [Lifecycle Hooks](#lifecycle-hooks)
+29. [Refs](#refs)
+30. [Forms](#forms)
+31. [HTTP Methods & Axios](#http-methods--axios)
+32. [Higher Order Components (HOCs)](#higher-order-components-hocs)
+33. [Routing](#routing)
+34. [Error Handling & Error Boundaries](#error-handling--error-boundaries)
+35. [React Profiler & Portals](#react-profiler--portals)
+36. [Build & Deploy](#build--deploy)
+37. [Context API](#context-api)
+38. [Redux](#redux)
+39. [React Hooks](#react-hooks)
+40. [Unit Testing (Jest)](#unit-testing-jest)
+41. [ESLint](#eslint)
+42. [Environment Variables](#environment-variables)
+43. [Resources & Links](#resources--links)
+
+---
+
+## Syllabus
+
+- ReactJs features (VirtualDOM, Reconciliation)
+- Local Environment Setup (Create-react-app, Vite)
+- JSX
+- Class Components
+- Functional Components
+- React Object
+- Fragment
+- Component Styling
+- Conditional Rendering
+- Lists & Keys
+- Props: destructuring, requiring props, PropTypes, default props
+- State
+- Pure Component
+- Memo Component
+- Higher Order Component
+- Events: Synthetic Event
+- Lifecycle Hooks
+- Form
+- HTTP - Axios
+- Interceptors
+- Routing
+- Redux (State Management)
+- Unit Testing (Jest)
+- ESLint
+
+---
+
+## React Local Setup
+
+1. Download and install Node.js: https://nodejs.org/en/download/
+
+2. Check if Node.js is installed:
+   ```bash
+   node -v
+   ```
+
+3. Check if NPM is installed (NPM = Node Package Manager):
+   ```bash
+   npm -v
+   ```
+
+4. Go to the folder where you want to create the project and run:
+   ```bash
+   npx create-react-app project1
+   ```
+   *(npx = node package executer)*
+
+5. Go to the created project folder and start the React application:
+   ```bash
+   cd project1
+   npm start
+   ```
+
+6. A new browser window will pop up at `http://localhost:3000/`
+
+   To use a different port:
+   ```bash
+   set PORT=3001 && npm start
+   ```
+
+---
+
+## React Project with TypeScript
+
+- Create React App supports TypeScript out of the box.
+- To create a new project with TypeScript support:
+  ```bash
+  npx create-react-app my-app --template typescript
+  ```
+- To add TypeScript to an existing project:
+  ```bash
+  npm install --save typescript @types/node @types/react @types/react-dom @types/jest
+  ```
+
+---
+
+## create-react-app
+
+- A React application boilerplate generator created by Facebook.
+- Installs React, ReactDOM & other required libraries.
+- Provides a development environment configured for ease-of-use with minimal setup.
+- Creates a frontend build pipeline using **Babel** and **Webpack** under the hood.
+
+---
+
+## NPX
+
+- **NPX** = Node Package Executer
+- A package runner/executor tool.
+- Can execute any package from the npm registry without installing it:
+  ```bash
+  npx create-react-app my-app
+  ```
+
+---
+
+## React App with Vite
+
+- **Vite.js** is a build tool and development server optimized for modern web apps.
+- Includes built-in support for TypeScript and CSS preprocessors.
+
+**Steps:**
+
+1. Create a Vite project:
+   ```bash
+   npm create vite@latest
+   # OR
+   npm create vite@latest my-app -- --template react
+   # OR (TypeScript)
+   npm create vite@latest my-app -- --template react-ts
+   ```
+
+2. Go to the created project, install dependencies, and serve:
+   ```bash
+   cd my-app
+   npm install
+   npm run dev
+   ```
+
+---
+
+## What React Is
+
+- React is a **JavaScript library** for building user interfaces.
+- It is an open-source, component-based library.
+- Created & maintained by **Facebook**.
+- Used to build **Single Page Applications (SPAs)**.
+- Allows creation of **reusable UI components**.
+- Uses **Virtual DOM** mechanism to fill in data (views) in HTML DOM.
+
+---
+
+## React is NOT a Framework
+
+> React is a library — it only takes care of the UI.  
+> Angular is a framework — it handles Dependency Injection, CSS encapsulation, httpClient, Form validation, routing, etc.
+
+| Framework | Library |
+|-----------|---------|
+| Group of libraries to make work easier | Performs specific, well-defined operations |
+| Provides ready-to-use tools, standards, templates | Provides reusable functions for code |
+| Collection of libraries & APIs | Collection of helper functions, objects |
+| Cannot be easily replaced | Can be easily replaced by another |
+| Angular, Vue | jQuery, ReactJs, lodash, moment |
+| Hospital with full of doctors | A doctor who specializes in one area |
+
+### React vs Angular
+
+| | React | Angular |
+|--|-------|---------|
+| Type | Library (2013) | Framework (2009) |
+| Size | Light-weight | Heavy |
+| Language | JSX + JavaScript | HTML + TypeScript |
+| Data Flow | Uni-Directional | Two-way |
+| DOM | Virtual DOM | Regular DOM |
+| HTTP | Axios | HttpClientModule |
+| DI | No | Yes |
+| Form Validation | No | Yes |
+| Extra Libraries | Needed | Not required |
+| Focus | UI heavy | Functionality Heavy |
+
+---
+
+## React Features
+
+- Light-weight
+- JSX
+- Components (easy to build, easy to extend, reusable, loosely coupled)
+- One-way Data Binding (no watchers for bindings)
+- Virtual DOM
+- Easy to learn because of simple design
+- High Performance
+
+---
+
+## DOM and Virtual DOM
+
+### DOM (Document Object Model)
+
+- A tree-like structure representing the HTML of a web page.
+- Allows JavaScript to interact with and modify the page's content, structure, and style.
+
+### Why Virtual DOM?
+
+- Frequent DOM manipulations are expensive and performance-heavy.
+- Every time the DOM changes, browser recalculates CSS, runs layout, and repaints the page.
+- Virtual DOM minimizes the time it takes to repaint the screen.
+
+### What is Virtual DOM?
+
+- A **lightweight JavaScript object** that is a copy of the real DOM.
+- A node tree that lists elements, their attributes, and content as objects.
+- React **never reads from real DOM, only writes to it**.
+
+### Virtual DOM Benefits
+
+- **Improved Performance** – Reduces the number of direct DOM manipulations.
+- **Optimized Updates** – React intelligently determines the most efficient update path, minimizing costly reflows and repaints.
+- **Simplified Development** – Abstracts away complexities of direct DOM manipulation.
+
+### How React Works (Virtual DOM)
+
+1. **Initial Render** – React creates a Virtual DOM tree based on initial JSX.
+2. **State Changes** – When state changes, React generates a new Virtual DOM tree.
+3. **Diffing** – React compares new Virtual DOM with previous Virtual DOM, identifying what changed.
+4. **Reconciliation** – React calculates the minimal real DOM operations needed.
+5. **Real DOM Update** – Only necessary changes are applied to the real DOM.
+
+### Shadow DOM vs Virtual DOM
+
+| | Shadow DOM | Virtual DOM |
+|--|------------|-------------|
+| What | Browser technology for scoping variables and CSS in web components | Concept implemented by React on top of browser APIs |
+
+### ReactDOM
+
+- ReactDOM is the **glue between React and the DOM**.
+- React creates a Virtual DOM; ReactDOM efficiently updates the real DOM based on it.
+
+---
+
+## React Reconciliation
+
+- Reconciliation is the process of syncing the Virtual DOM to the actual DOM.
+- Tracks changes in component state and renders updated state to the screen.
+
+### Stack Reconciler (< React 16)
+- Synchronous
+- Works like a stack
+- Cannot be interrupted
+
+### Fiber Reconciler (React 16+)
+- Asynchronous (new reconciliation engine in React v16)
+- Divides work into multiple units (incremental rendering)
+- Sets priority for each work unit — can **pause, reuse, and abort** work
+- Separates reconciliation into two phases:
+  - **Phase 1: Render/Processing** – React creates a list of all UI changes (can be interrupted)
+  - **Phase 2: Commit** – React applies the changes to the real DOM (cannot be interrupted)
+
+---
+
+## React Project Structure
+
+| File/Folder | Description |
+|-------------|-------------|
+| `node_modules/` | npm packages for the entire workspace |
+| `public/` | Only files here can be referenced from HTML |
+| `src/` | Source files for the root-level application |
+| `.gitignore` | Files Git should ignore |
+| `package.json` | Configures npm package dependencies |
+| `package-lock.json` | Version info for all installed packages |
+| `README.md` | Introductory documentation |
+
+### React Project Flow
+
+```
+index.html  -->  <div id="root"></div>
+index.js    -->  root = ReactDOM.createRoot(document.getElementById('root'))
+                 root.render(<App />)
+App.js      -->  App Component Code
+```
+
+---
+
+## JSX
+
+- **JSX** (JavaScript Syntax Extension) is special syntax for React to represent UI.
+- JSX allows adding elements to DOM without using `createElement()` or `appendChild()`.
+- JSX looks similar to HTML but **is not HTML**.
+- JSX code gets transformed into `React.createElement()` by **Babel**.
+- JSX doesn't support void tags — `<img>` is invalid; use `<img />` or `<img></img>`.
+- React DOM uses **camelCase** property naming: `class` → `className`, `tabindex` → `tabIndex`.
+
+### React Without JSX
+
+```js
+// Syntax
+React.createElement(type, [props], [...children])
+
+// Example
+React.createElement("div", { class: "test" }, "This is a div");
+// is equivalent to JSX:
+// <div class='test'>This is a div</div>
+```
+
+---
+
+## React Element
+
+- A React element is a JavaScript object with specific properties and methods.
+- Created using `React.createElement()`.
+- `document.createElement()` returns a **DOM element**.
+- `React.createElement()` returns an **object representing the DOM element**.
+
+```js
+const hello = React.createElement(
+  "H1",
+  { id: "msg", className: "title" },
+  "Hello React Element"
+);
+```
+
+---
+
+## Module Systems & Imports/Exports
+
+### CommonJS
+```js
+module.exports = { member1, member2 };
+const member1 = require('Library/file name');
+```
+
+### ECMAScript
+```js
+export member1;
+export default member2;
+import DefaultMember, { NamedMember } from 'file';
+```
+
+### Named Export vs Default Export
+
+- Only **one default export** per file; **multiple named exports** are allowed.
+- Default export can be a function, class, or object (not a variable).
+- Named import must use the **same name** as the export.
+- Default import can use **any name**.
+
+```js
+import MyReact, { MyComponent } from "react";
+```
+
+---
+
+## Components
+
+- Components are the most basic UI building blocks of a React application.
+- Each component outputs a small, reusable piece of HTML.
+- Components are **re-usable** and can be nested.
+
+### 2 Types of Components
+
+| Functional Component | Class Component |
+|----------------------|----------------|
+| No `this` keyword | More feature-rich |
+| Solution without state | Maintains own private data (state) |
+| Mainly for UI | Complex UI logic |
+| Stateless/dumb/Presentational | Provides lifecycle hooks |
+
+```js
+// Functional Component
+function Welcome(props) {
+  return <h1>Hello, {props.name}</h1>;
+}
+
+// Class Component
+class Welcome extends React.Component {
+  render() {
+    return <h1>Hello, {this.props.name}</h1>;
+  }
+}
+```
+
+> **Note:** From React 16.8+, Hooks allow using state and lifecycle in functional components. It is always recommended to use **functional components**.
+
+### React Emmet Snippets (VS Code Plugin)
+
+| Shortcut | Expansion |
+|----------|-----------|
+| `IMR` | `import React from 'react'` |
+| `IMRD` | `import ReactDOM from 'react-dom'` |
+| `IMRC` | `import React, { Component } from 'react'` |
+| `RFC` | React Functional Component |
+| `RFCE` | React Functional Export Component |
+| `RAFCE` | React Arrow Function Export Component |
+| `RCC` | React Class Component |
+| `RPC` | React Class Pure Component |
+
+### Recommended VS Code Extensions
+
+1. React Snippet
+2. ESLint
+3. Prettier
+4. Code Spell Checker
+5. GitLens
+6. vscode-icons
+7. Thunder Client
+
+### React Plugins (Browser)
+
+1. React Developer Tools
+2. React-sight
+3. Redux DevTools
+
+---
+
+## React.StrictMode
+
+- A tool for highlighting potential problems in a React application.
+- Activates additional checks and warnings for its descendants.
+- Strict mode checks run in **development mode only** (do not impact production).
+- **Renders components twice** in dev mode to detect problems.
+
+```jsx
+import React, { StrictMode } from "react";
+<StrictMode>
+  <App />
+</StrictMode>
+```
+
+---
+
+## Bootstrap & Icons
+
+### Using Bootstrap via npm
+
+```bash
+npm i bootstrap
+npm i bootstrap-icons
+```
+
+```js
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import 'bootstrap-icons/font/bootstrap-icons.css';
+```
+
+### Using Bootstrap Icons
+
+```jsx
+<i className="bi-alarm"></i>
+<i className="bi-airplane" style={{ fontSize: "2rem", color: "cornflowerblue" }}></i>
+```
+
+### Using React-Icons
+
+```bash
+npm install react-icons
+```
+
+```jsx
+import { FaEdit, FaTrash } from 'react-icons/fa';
+<FaEdit />
+<FaTrash color='red' />
+```
+
+---
+
+## Fragments
+
+- JSX can only return **1 element** at a time.
+- Fragments allow rendering multiple elements **without adding extra DOM nodes**.
+
+```jsx
+// Long form
+import { Fragment } from 'react';
+<Fragment>
+  <div>Element 1</div>
+  <button>Element 2</button>
+</Fragment>
+
+// Short form (React 16.2+)
+<>
+  <div>Element 1</div>
+  <button>Element 2</button>
+</>
+```
+
+---
+
+## Data Binding & CSS
+
+### Data Binding
+
+| Type | Description | React Example |
+|------|-------------|---------------|
+| One-way Binding | State → UI | `{value}` |
+| Two-way Binding | State ↔ UI using onChange | `value + onChange` |
+
+### CSS in React
+
+Different ways to add CSS:
+1. Inline CSS
+2. External CSS
+3. Global CSS (`index.css`)
+4. **CSS Modules**
+5. Conditional CSS
+
+### CSS Modules
+
+- Fixes the problem of global scope in CSS.
+- All class names are scoped locally by default.
+- Prevents naming clashes across files.
+- Auto-generates unique class names in format: `[filename]_[classname]__[hash]`
+
+```js
+import styles from './Button.module.css';
+<button className={styles.error}>Error Button</button>
+```
+
+---
+
+## Conditional Rendering
+
+Allows rendering different elements based on conditions.
+
+**Use cases:** Showing/hiding elements, toggling functionality, authentication.
+
+**Methods:**
+- `if...else` Statement
+- `switch` Statement
+- Ternary Operator
+- Logical `&&` (Short Circuit Evaluation)
+
+```jsx
+// Ternary
+<div>{flag ? <h1>Hello</h1> : null}</div>
+
+// Short Circuit
+<div>{flag && <h1>Hello</h1>}</div>
+```
+
+---
+
+## Lists and Keys
+
+- A `key` is a special attribute required when creating list items.
+- Console warning appears if key prop is missing.
+- Keys give elements a **stable unique identity**.
+- Helps React identify which items changed, were added, or removed.
+
+```jsx
+{EmployeeArr.map((emp, ind) => (
+  <option key={ind} value={emp} />
+))}
+```
+
+> **Tip:** Avoid using index as key if the list is filtered or sorted — it causes React to consider items as different elements and repaint the whole list.
+
+> **Note:** `map()` is used instead of `forEach()` because JSX needs an array of items — `forEach()` returns `undefined`, `map()` returns an array.
+
+### Read Data from JSON / JS File
+
+```js
+// 1. Create employees.json
+// 2. Import it
+import EmployeeArr from './employees.json';
+// 3. Use in JSX
+{EmployeeArr.map((emp, ind) => (
+  <option key={ind} value={emp} />
+))}
+```
+
+---
+
+## Props
+
+- Props are **inputs to components**.
+- Props stand for **properties** — a special keyword in React.
+- Pass custom data from **parent to child** (uni-directional flow).
+- Props are **immutable** — child components should not change them.
+
+```jsx
+<ChildComponent someAttribute={value} anotherAttribute={value} />
+
+// Access in class component
+this.props.propName
+
+// Access in functional component
+props.propName
+```
+
+### Props Destructuring
+
+```jsx
+// Functional Component
+export default function Greet({ name, msg }) {}
+
+// Class Component
+let { pId, name, price } = this.props.product;
+```
+
+### PropTypes
+
+```bash
+npm install prop-types
+```
+
+```js
+import PropTypes from 'prop-types';
+
+ComponentName.propTypes = {
+  name: PropTypes.string,
+  age: PropTypes.number,
+  optionalArray: PropTypes.array,
+  optionalBool: PropTypes.bool,
+  optionalFunc: PropTypes.func,
+  optionalEnum: PropTypes.oneOf(['News', 'Photos']),
+  optionalObjectWithShape: PropTypes.shape({
+    color: PropTypes.string,
+    fontSize: PropTypes.number,
+  }),
+};
+```
+
+### Requiring Props
+
+```js
+Student.propTypes = {
+  name: PropTypes.string.isRequired, // Required
+  age: PropTypes.number,             // Optional
+};
+```
+
+### Default Props
+
+```js
+Greet.defaultProps = {
+  msg: 'this is my default message'
+};
+
+// OR destructuring
+export default function Greet({ name, msg = 'good morning' }) {}
+```
+
+### Props.children
+
+```jsx
+<Welcome>Hello world!</Welcome>
+
+class Welcome extends React.Component {
+  render() {
+    return <p>{this.props.children}</p>;
+  }
+}
+```
+
+### Prop Drilling
+
+- Passing props through components that don't need the data.
+- Creates issues with component reusability and performance.
+- Solved by **Context API** or **Redux**.
+
+---
+
+## State
+
+- The State of a component is an object that holds data that may **change over the component's lifetime**.
+- When state changes, React **re-renders** the component.
+- States are **mutable** and **local** to the component.
+
+### Why State Variables (vs Local Variables)?
+
+| Local Variable | State Variable |
+|----------------|----------------|
+| Changing doesn't re-render | Changing triggers re-render |
+| Re-created on each render (no persistence) | Persisted across re-renders |
+
+### State in Class Component
+
+```js
+// Initialize in constructor
+this.state = { counter: 0 };
+
+// Update with setState
+this.setState({ counter: this.state.counter + 1 });
+
+// setState is asynchronous — use callback for post-update code
+this.setState({ counter: 1 }, () => { /* runs after update */ });
+
+// Update based on previous state
+this.setState(prevState => ({ value: prevState.value + 1 }));
+```
+
+### State in Functional Component
+
+```js
+const [count, setCount] = useState(0);
+
+// Update based on previous state
+setCount(prevState => prevState + 1);
+
+// Code after state update — use useEffect
+```
+
+### Props vs State
+
+| Props | State |
+|-------|-------|
+| Immutable | Mutable |
+| Passed from parent to child | Contains own data, changes over time |
+| For component communication | For rendering dynamic changes |
+| `props` (Functional), `this.props` (Class) | `useState()` (Functional), `this.state={}` (Class) |
+
+---
+
+## React Events
+
+- React events are written in **camelCase**: `onClick`, `onChange`
+- Event handlers written inside **curly braces**: `onClick={shoot}`
+- Use **arrow functions** so `this` refers to the component.
+
+```jsx
+<button onClick={shoot}>Take the Shot!</button>       // calls on click
+<button onClick={shoot()}>Take the Shot!</button>     // calls on load (wrong!)
+```
+
+### Binding `this` in Class Components
+
+```js
+// Arrow function (recommended)
+shoot = (a) => { alert(a); }
+<button onClick={() => this.shoot("Goal")}>Take the shot!</button>
+
+// Bind in constructor
+constructor(props) {
+  super(props);
+  this.f1 = this.f1.bind(this);
+}
+```
+
+### Single Event Handler for Multiple Inputs
+
+```js
+const changeHandler = (e) => {
+  const { name, value } = e.target;
+  this.setState({ [name]: +value });
+};
+```
+
+### SyntheticEvent
+
+- `SyntheticEvent` is a cross-browser wrapper around the browser's native event.
+- React event handlers receive `SyntheticEvent` instead of the native event.
+
+```jsx
+// Bubbling phase
+<button onClick={f1}>click me</button>
+
+// Capture phase
+<button onClickCapture={f1}>click me</button>
+```
+
+---
+
+## Component Communication
+
+- **Parent → Child:** Props
+- **Child → Parent:** Callback and states
+- **Between Siblings:** Combine the above two
+
+### Child to Parent
+
+```js
+// 1. Define a function in parent
+// 2. Pass function as prop to child
+// 3. Call this.props.callback(data) in the child
+```
+
+---
+
+## PureComponent & Memo
+
+### PureComponent
+
+- Same as `Component` but handles `shouldComponentUpdate` automatically.
+- Does a **shallow comparison** on props and state.
+- Only re-renders if props/state actually changed.
+
+```js
+class myComp extends React.PureComponent {}
+```
+
+> In Functional Components, every component is a PureComponent by default — re-render happens only when state/props change.
+
+### React.memo()
+
+- Higher-order component/function (React 16.6+).
+- Renders a component **only if its props change**.
+- Used with child components receiving props.
+
+```js
+export default React.memo(MyComponent);
+```
+
+### useMemo()
+
+- Memoizes an **expensive computed value**.
+- Only re-computes when dependencies change.
+
+```js
+const calculation = useMemo(() => expensiveCalculation(count), [count]);
+```
+
+### useCallback()
+
+- Memoizes a **callback function**.
+- Prevents re-rendering child components that receive functions as props.
+
+```js
+const addTodo = useCallback(() => {
+  setTodos(t => [...t, "New Todo"]);
+}, []);
+```
+
+---
+
+## Lifecycle Hooks
+
+Every React class component goes through three phases:
+
+### 1. Mounting
+
+Order: `constructor` → `getDerivedStateFromProps` → `render` → `componentDidMount`
+
+**constructor()**
+- Called first when component is initiated.
+- Natural place to set initial state.
+- Always call `super(props)` first.
+- Do NOT call `setState()` in constructor.
+
+**static getDerivedStateFromProps(props, state)**
+- Called right before rendering.
+- Returns object with state changes based on props.
+
+**render()**
+- Required method that outputs HTML to the DOM.
+- Re-invoked when state/props changes.
+
+**componentDidMount()**
+- Called after component is rendered.
+- Best place for **API calls** and **DOM manipulation**.
+
+### 2. Updating
+
+Order: `getDerivedStateFromProps` → `shouldComponentUpdate` → `render` → `getSnapshotBeforeUpdate` → `componentDidUpdate`
+
+**shouldComponentUpdate()**
+- Returns a boolean specifying whether to continue rendering.
+- Default is `true`.
+
+**getSnapshotBeforeUpdate(prevProps, prevState)**
+- Access to props and state before the update.
+
+**componentDidUpdate()**
+- Called after component is updated in the DOM.
+- Not called for the initial render.
+
+### 3. Unmounting
+
+**componentWillUnmount()**
+- Called immediately before component is destroyed.
+- Use for cleanup: cancel network requests, clear timers, unsubscribe, detach event handlers.
+
+### useEffect() — Functional Component Equivalent
+
+```js
+// Runs once on mount (like componentDidMount)
+useEffect(() => {}, []);
+
+// Runs on every state change (no 2nd argument)
+useEffect(() => {});
+
+// Runs when 'count' changes (like componentDidUpdate)
+useEffect(() => {}, [count]);
+
+// Cleanup on unmount (like componentWillUnmount)
+useEffect(() => {
+  return () => { /* cleanup */ };
+}, []);
+```
+
+### useLayoutEffect()
+
+- Fires **before** the browser repaints the screen.
+- Runs synchronously after all DOM mutations.
+- Use when you need to mutate the DOM inside the effect.
+
+---
+
+## Refs
+
+- Provide a way to access DOM nodes or React elements.
+- Used to manage focus, text selection, animations.
+
+```js
+// Class Component
+this.myRef1 = React.createRef();
+
+// Functional Component
+const myRef1 = useRef();
+
+// Callback Ref
+<input ref={x => inputRef1 = x} />
+```
+
+- **Ref Forwarding** — lets components pass/forward a ref to a child.
+
+---
+
+## Forms
+
+- React uses forms to collect user data.
+- Use `event.target.value` for field value, `event.target.name` for field name.
+- Use `event.preventDefault()` to prevent page refresh on submit.
+
+### Controlled vs Uncontrolled Components
+
+| Feature | Uncontrolled | Controlled |
+|---------|-------------|------------|
+| One-time value retrieval | ✅ | ✅ |
+| Validating on submit | ✅ | ✅ |
+| Default value | ✅ | ✅ |
+| Field-level Validation | ❌ | ✅ |
+| Conditionally disabling submit | ❌ | ✅ |
+| Enforcing input format | ❌ | ✅ |
+| Dynamic inputs | ❌ | ✅ |
+
+```jsx
+// Controlled input
+<input onChange={this.onChange} value={this.state.name} />
+
+// Textarea in React
+<textarea value={this.state.description} />
+
+// Select in React
+<select value={this.state.mycar}>
+  <option value="Ford">Ford</option>
+</select>
+```
+
+### NPM Libraries for Form Handling
+- [react-hook-form](https://www.npmjs.com/package/react-hook-form)
+- [formik](https://www.npmjs.com/package/formik)
+- [yup](https://www.npmjs.com/package/yup)
+
+---
+
+## HTTP Methods & Axios
+
+### HTTP Methods
+
+| Method | Purpose | Example |
+|--------|---------|---------|
+| `GET` | Retrieve data from DB | Search |
+| `POST` | Send data to server, create a resource | Sign up |
+| `PUT` | Create or replace a resource | Update profile |
+| `PATCH` | Partial update of a resource | Update password |
+| `DELETE` | Remove a resource | Delete account |
+
+### HTTP Status Codes
+
+- `1xx` Informational: 100-Continue, 101-Switching Protocols
+- `2xx` Success: 200-OK, 201-Created, 204-No Content
+- `3xx` Redirection: 301-Moved Permanently, 304-Not Modified
+- `4xx` Client Error: 400-Bad Request, 401-Unauthorized, 403-Forbidden, 404-Not Found
+- `5xx` Server Error: 500-Internal Server Error, 502-Bad Gateway, 503-Service Unavailable
+
+### Ways to Fetch Data in React
+
+1. `fetch()` with `.then()`
+2. `async/await` syntax
+3. Axios library
+4. Custom hooks
+
+### HTTP with fetch()
+
+```js
+fetch('https://jsonplaceholder.typicode.com/todos/1')
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+
+### Async/Await
+
+```js
+const fetchProducts = async function () {
+  const products = await fetch("https://fakestoreapi.com/products");
+  const productsJSON = await products.json();
+  setProducts(productsJSON);
+};
+```
+
+### HTTP with Axios
+
+```bash
+npm i axios
+```
+
+```js
+import axios from 'axios';
+
+const fetchUsers = async () => {
+  const url = "https://jsonplaceholder.typicode.com/users";
+  const response = await axios.get(url);
+  setUsers(response.data);
+};
+```
+
+### Axios vs fetch()
+
+| Axios | fetch() |
+|-------|---------|
+| Built-in XSRF protection | ❌ |
+| Uses `data` property | Uses `body` property (must be stringified) |
+| Automatic JSON transforms | Two-step process |
+| Request timeout & cancellation | ❌ |
+| HTTP interceptors built-in | ❌ |
+| Download progress support | No upload progress |
+
+### Create Axios Instance
+
+```js
+// api.js
+import axios from 'axios';
+const client = axios.create({ baseURL: 'http://jsonplaceholder.typicode.com/' });
+export default client;
+
+// Usage
+import client from 'api.js';
+client.get('/users');
+```
+
+### Multiple Requests with Axios
+
+```js
+const [response1, response2] = await axios.all([
+  axios.get('https://api.github.com/users/defunkt'),
+  axios.get('https://api.github.com/users/evanphx')
+]);
+```
+
+### HTTP Interceptors
+
+```
+HTTP Request → Interceptor → Modified Request → Server
+Server → HTTP Response → Interceptor → Modified Response → Component
+```
+
+**Request Interceptor:**
+```js
+axios.interceptors.request.use((req) => {
+  req.headers.authorization = "my secret token";
+  return req;
+});
+```
+
+**Response Interceptor:**
+```js
+axios.interceptors.response.use(
+  res => res,
+  err => {
+    if (err.response.status === 404) {
+      throw new Error(`${err.config.url} not found`);
+    }
+    throw err;
+  }
+);
+```
+
+**Remove an Interceptor:**
+```js
+const myInterceptor = axios.interceptors.request.use(function () {/*...*/});
+axios.interceptors.request.eject(myInterceptor);
+```
+
+### Fake REST APIs for Testing
+
+1. https://jsonplaceholder.typicode.com/
+2. https://reqres.in/
+3. https://fakestoreapi.com/products
+4. https://api.github.com/users/google
+5. https://dummyjson.com/products
+
+### Create REST API with json-server
+
+```bash
+npm install -g json-server
+json-server --watch db.json --port=4000
+```
+
+Available routes: `GET /employees`, `POST /employees`, `PUT /employees/:id`, `DELETE /employees/:id`
+
+---
+
+## Higher Order Components (HOCs)
+
+- A technique for **re-using component logic**.
+- Takes one or more components as arguments and returns a **new upgraded component**.
+
+```js
+newComponent = higherOrderComponent(originalComponent);
+```
+
+**Use cases:** Authentication, Logging, Styling and Theming, Infinite scroll, Data subscription, Shared search features.
+
+---
+
+## Routing
+
+- **Single Page Applications (SPAs)** load a single HTML page and dynamically update it.
+- React Router makes sure the app loads components when the URL changes.
+
+### Types of Routes
+
+| Type | URL Example |
+|------|-------------|
+| BrowserRouter (classic URLs) | `https://app.com/dashboard` |
+| HashRouter (for older browsers) | `https://app.com/#/dashboard` |
+
+### Setup Steps
+
+```bash
+npm install react-router-dom
+```
+
+```jsx
+// index.js
+import { BrowserRouter } from 'react-router-dom';
+<BrowserRouter><App /></BrowserRouter>
+
+// App.js (Body)
+import { Routes, Route } from 'react-router-dom';
+<Routes>
+  <Route exact path="/" element={<Home />} />
+  <Route path="/aboutus" element={<AboutUs />} />
+  <Route path="*" element={<NotFound />} /> {/* No match route */}
+</Routes>
+
+// Navigation
+<Link to="/">Home</Link>
+<Link to="/about">About Us</Link>
+```
+
+### Link vs NavLink
+
+- `<Link>` — no active class on selected element.
+- `<NavLink>` — adds an **active class** to the selected element.
+
+```jsx
+<NavLink to='home' className='nav-link'>Home</NavLink>
+```
+```css
+nav a.active { text-decoration: none; font-weight: bolder; background-color: aqua; }
+```
+
+### Programmatic Navigation
+
+```js
+import { useNavigate } from 'react-router-dom';
+const navigate = useNavigate();
+navigate('/products');
+
+// Navigate back/forward
+navigate(-1); // Back
+navigate(1);  // Forward
+```
+
+### Route Params
+
+**Path Params:**
+```jsx
+<Route path="/productdetails/:id" element={<ProductDetails />} />
+<Link to={`/productdetails/${id}`}>View Details</Link>
+
+// In ProductDetails
+const { id } = useParams();
+```
+
+**Query Params:**
+```jsx
+navigate({ pathname: "/productdetails", search: `?${createSearchParams({ title, price })}` });
+
+const [searchParams] = useSearchParams();
+searchParams.get("title");
+```
+
+### Nested Routing
+
+```jsx
+<Route path="/products" element={<Products />}>
+  <Route path="featured" element={<FeaturedProducts />} />
+  <Route path="new" element={<NewProducts />} />
+</Route>
+
+// In Products component — add Outlet
+<Outlet />
+```
+
+### Protected Routes
+
+- Routes that can only be accessed if a condition is met (e.g., user is authenticated).
+- Returns a component or redirects to sign-in page based on a condition.
+
+### Replace (History)
+
+```jsx
+// HTML
+<Navigate to="/home" replace />
+
+// JavaScript
+navigate("/home", { replace: true });
+```
+
+Used after login to prevent users from going back to login page.
+
+### Code Splitting / Lazy Loading
+
+```jsx
+const OtherComponent = React.lazy(() => import('./OtherComponent'));
+
+<Suspense fallback={<div>Loading...</div>}>
+  <OtherComponent />
+</Suspense>
+```
+
+---
+
+## Error Handling & Error Boundaries
+
+### When to Use try-Catch
+- Handling errors in specific code blocks.
+- Handling errors in event handlers.
+- Handling errors in server-side rendering.
+
+### Error Boundaries
+
+- React components that catch JavaScript errors anywhere in their child component tree.
+- Display a **fallback UI** instead of crashing the app.
+- Only supported in **class components**.
+- Does NOT catch errors in: event handlers, async code, SSR, or inside the boundary itself.
+
+```js
+class ErrorBoundary extends React.Component {
+  static getDerivedStateFromError(error) {
+    return { hasError: true }; // Render fallback UI
+  }
+  componentDidCatch(error, info) {
+    logToDatabase(error, info);
+  }
+}
+```
+
+---
+
+## React Profiler & Portals
+
+### React Profiler
+
+- Measures how often a React application renders and the "cost" of rendering.
+- Disabled in production builds.
+
+```jsx
+<Profiler id="Navigation" onRender={callbackFn}>
+  <Navigation {...props} />
+</Profiler>
+
+function callbackFn(id, phase, actualDuration, baseDuration, startTime, commitTime) {
+  logToDatabase({ id, phase, actualDuration });
+}
+```
+
+### React Portals
+
+- Render components **outside the main DOM tree** (`#root`).
+- Still retains React capabilities (props, state, context).
+- Use cases: Modals, Tooltips, Dropdowns, Toasts/Notifications.
+
+```jsx
+import { createPortal } from 'react-dom';
+
+{createPortal(
+  <p>This child is placed in the document body.</p>,
+  document.body
+)}
+```
+
+---
+
+## Build & Deploy
+
+```bash
+npm run build   # Creates a production build in /build folder
+```
+
+### Deploy Locally
+
+```bash
+npm i -g serve
+serve   # OR
+serve -l 7000
+```
+
+### Deploy to Cloud
+
+- AWS, Azure, Firebase, GitHub Pages, Netlify, Heroku, Vercel, Hostinger
+
+### Generated Files
+
+| File | Description |
+|------|-------------|
+| `main.[hash].js` | Application code |
+| `[number].[hash].chunk.js` | Vendor code |
+| `runtime-main.[hash].js` | Webpack runtime logic |
+
+### Package.json vs Package-lock.json
+
+| | package.json | package-lock.json |
+|--|------------|-----------------|
+| Required | Mandatory | Optional |
+| Contains | Project properties, scripts, top-level dependencies | Nested/peer dependencies |
+| Versions | Minimum version (`~` for patch, `^` for minor) | Exact version |
+
+### Dependencies vs DevDependencies
+
+```bash
+# Production dependency (needed in dev AND production)
+npm i bootstrap
+
+# Development-only dependency
+npm i --save-dev eslint
+```
+
+---
+
+## Context API
+
+- Helps avoid **prop drilling** and shares global state easily.
+- Pass data through the component tree without intermediate props.
+- Ideal for **small applications** with minimal state changes.
+- Use cases: authenticated user, theme, preferred language.
+
+```js
+// 1. Create context
+export const MyContext = React.createContext(defaultValue);
+
+// 2. Provide context
+<MyContext.Provider value={/* some value */}>
+  <ComponentX />
+</MyContext.Provider>
+
+// 3. Consume context (Functional Component)
+const myContextObj = useContext(MyContext);
+
+// 3. Consume context (Class Component)
+<MyContext.Consumer>
+  {value => /* render something */}
+</MyContext.Consumer>
+```
+
+---
+
+## Redux
+
+- A **state management library**.
+- State is maintained **outside** React components.
+- Used with `react-redux` library for bindings.
+
+```
+View/UI → Action → Reducer → Store/State → View
+```
+
+### 3 Core Concepts
+
+| Concept | Description |
+|---------|-------------|
+| **Store** | Holds the entire application state |
+| **Action** | Describes what happened (plain JS object with `type` property) |
+| **Reducer** | Pure function: `(previousState, action) => newState` |
+
+### 3 Principles of Redux
+
+1. Whole application state in a **single store**.
+2. State changes only via **actions** (cannot update state directly).
+3. State changes specified by **pure Reducers**.
+
+### Store Methods
+
+- `getState()` — read state
+- `dispatch(action)` — update state
+- `subscribe(listener)` — register listener
+
+### Redux Toolkit
+
+```bash
+npx create-react-app my-app --template redux
+# OR
+npm install @reduxjs/toolkit react-redux
+```
+
+**Steps:**
+1. Create a Redux store with `configureStore`
+2. Provide the store to React with `<Provider store={store}>`
+3. Create a slice reducer with `createSlice`
+4. Use `useSelector` / `useDispatch` hooks in components
+
+### Redux Middlewares
+
+- Extends store's capabilities for async updates.
+- Helps with logging, error reporting, async requests.
+
+```
+Store → View → Action → Middleware → Reducer → Store
+```
+
+### Thunks
+
+- Standard approach for **async logic** in Redux.
+- Allows dispatching functions instead of plain action objects.
+
+### Thunks vs Sagas
+
+| Thunks | Sagas |
+|--------|-------|
+| Simpler | More testable |
+| Functions return functions | Uses generator functions |
+| Standard for most cases | Better for complex async flows |
+
+### Context API vs Redux
+
+| Context API | Redux |
+|-------------|-------|
+| Ideal for small apps | Perfect for large apps |
+| Minimal state changes | High-frequency state updates |
+| Simple setup | More structural, advanced |
+
+---
+
+## React Hooks
+
+- Hooks let you "hook into" React features in functional components.
+- Added in **React 16.8**.
+
+### Rules of Hooks
+
+1. Only call Hooks **at the top level** (not inside loops, conditions, or nested functions).
+2. Only call Hooks from **React function components** or custom hooks.
+
+### Built-in Hooks
+
+`useState`, `useEffect`, `useRef`, `useContext`, `useReducer`, `useCallback`, `useMemo`, `useId`, `useDebugValue`, `useDeferredValue`
+
+### useState
+
+```js
+const [count, setCount] = useState(0);
+// Returns: [currentState, updaterFunction]
+```
+
+### useEffect
+
+```js
+useEffect(() => {
+  // Side effect logic
+  return () => { /* cleanup */ };
+}, [dependencies]);
+```
+
+### useReducer
+
+```js
+// Similar to Redux but for local state
+const [todos, dispatch] = useReducer(reducer, initialTodos);
+```
+
+**useReducer vs Redux:**
+
+| useReducer | Redux |
+|------------|-------|
+| Local state | Centralized app state |
+| No extra dependencies | Has middlewares (Thunk, Sagas, logger) |
+| Suitable for small projects | Suitable for big projects |
+
+### useId()
+
+```jsx
+const id = useId();
+<label htmlFor={id}>Do you like React?</label>
+<input id={id} type="checkbox" name="react" />
+```
+
+### Custom Hooks
+
+- Reusable functions that start with `use`.
+- Can call other hooks.
+- Each call to a custom hook gets isolated state.
+
+```js
+function useCustomHook() {
+  const [state, setState] = useState(initialValue);
+  // logic...
+  return state;
+}
+```
+
+---
+
+## Unit Testing (Jest)
+
+- Unit testing can lead to **40%–80% reduction** in production bug density.
+- Can replace `console.log()` and manual UI testing.
+
+### Setup
+
+```bash
+npm i @testing-library/react
+npm i @testing-library/jest-dom
+npm i react-test-renderer
+```
+
+> **Note:** `create-react-app` ships with Jest pre-installed.
+
+### Running Tests
+
+```bash
+npm run test          # Run all tests
+npm test -- abc.spec.js  # Run specific file
+```
+
+### Terminology
+
+| Term | Description |
+|------|-------------|
+| `describe()` | Groups related tests (test suite) |
+| `it()` / `test()` | Defines a single test case |
+| `expect()` | Compares actual vs expected value |
+| `test.only()` | Executes only this test case in the file |
+
+### Jest Matchers
+
+```js
+toBe()                // Primitives
+not.toBe()
+toEqual()             // Objects/Arrays
+toBeNull()
+toBeDefined()
+toBeTruthy()          // 1, true, 'string', -5
+toBeFalsy()           // false, 0, undefined, null, ''
+toBeGreaterThan()
+toBeLessThan()
+toMatch(regex)
+toContain()
+```
+
+### Jest Global Functions
+
+| Function | When Called |
+|----------|-------------|
+| `beforeAll()` | Once before all test cases |
+| `beforeEach()` | Before each test case |
+| `afterEach()` | After each test case |
+| `afterAll()` | Once after all test cases |
+
+```js
+describe.skip()  // Skip this test suite
+describe.only()  // Run only this test suite
+it.skip()        // Skip this test case
+it.only()        // Run only this test case
+```
+
+### Snapshot Testing
+
+```
+__test__/
+  button.test.js
+  __snapshots__/
+    button.test.js.snap
+```
+
+- Ensures UI doesn't change unexpectedly.
+- If accidental change happens, test fails.
+- Press `u` to update failing snapshots.
+
+---
+
+## ESLint
+
+- A **static code analysis tool** for identifying problematic patterns in JavaScript.
+
+```bash
+npm i eslint -g
+npm init @eslint/config@latest
+eslint . --config eslint.config.mjs
+```
+
+```js
+// eslint.config.mjs
+rules: {
+  'no-unused-vars': 'warn',
+  'no-console': 'error',
+  'no-debugger': 'error'
+}
+```
+
+---
+
+## Environment Variables
+
+```bash
+# Built-in variable
+process.env.NODE_ENV  # 'development' | 'test' | 'production'
+```
+
+**Custom variables:**
+
+1. Create `.env` file in project root.
+2. Add variables prefixed with `REACT_APP_`:
+   ```
+   REACT_APP_MY_NAME=Sanjay
+   ```
+3. Use in components:
+   ```js
+   console.log(process.env.REACT_APP_MY_NAME);
+   <h1>{process.env.REACT_APP_MY_NAME}</h1>
+   ```
+
+---
+
+## Additional Topics
+
+### Server Side Rendering (SSR) vs Client Side Rendering (CSR)
+
+- **SSR:** Server processes and delivers HTML page to the browser. Initial load faster, SEO-friendly.
+- **CSR:** Browser renders HTML by modifying DOM. All code runs on client side.
+
+### GraphQL
+
+- Overcomes shortcomings of REST.
+- A **query language** for APIs.
+- Client requests only the data they need.
+- Most popular library: **Apollo Client**.
+
+### WebPack
+
+- Open-source JavaScript module bundler.
+- Transforms front-end assets (HTML, CSS, images) using loaders.
+- Used under the hood by `create-react-app`.
+
+### React.StrictMode — Renders components twice
+
+In development mode, StrictMode renders components twice to detect side effects and potential issues.
+
+---
+
+## Resources & Links
+
+- https://developers.facebook.com
+- [React Interview Questions](https://github.com/sudheerj/reactjs-interview-questions)
+- [React Todo App Tutorial](https://www.freakyjolly.com/reactjs-create-todo-application-in-reactjs-using-class-components/)
+- [30 Days of React](https://github.com/Asabeneh/30-Days-Of-React)
+- [React Profiler](https://www.pragimtech.com/blog/reactjs/profiler-in-react/)
+- [Prompting Documentation](https://create-react-app.dev/docs/adding-custom-environment-variables/)
+- [SweetAlert2](https://sweetalert2.github.io/#examples)
+- [HOC Tutorial](https://www.codingame.com/playgrounds/8595/reactjs-higher-order-components-tutorial)
