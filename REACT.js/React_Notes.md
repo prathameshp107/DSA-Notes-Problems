@@ -213,6 +213,111 @@ React is NOT a full framework — you choose your own stack:
 
 ---
 
+# Virtual DOM vs Real DOM in React
+
+A complete visual guide to how React's reconciliation engine works — from state change to screen update.
+
+## 1. What is the Real DOM?
+
+The **Real DOM** is the browser's live tree representation of your HTML page. Every change (even a single text update) triggers an expensive rendering pipeline:
+
+
+DOM change → Style calculation → Layout reflow → Repaint → Compositing
+
+
+## 2. What is the Virtual DOM?
+
+The **Virtual DOM** is React’s lightweight JavaScript copy of the UI. When state/props change, React:
+
+- Builds a new Virtual DOM tree
+- Diffs it with the previous one (Reconciliation)
+- Calculates the **minimum** changes
+- Applies them in **one batch** to the Real DOM
+
+### Virtual DOM Node Example
+
+```js
+// <div className="card"><h1>Hello</h1></div> becomes:
+{
+  type: "div",
+  props: { className: "card" },
+  children: [
+    { type: "h1", props: {}, children: ["Hello"] }
+  ]
+}
+```
+
+## 3. The Full Update Cycle
+
+![React Reconciliation Flow — From State Change to Screen Update](public/update-cycle.svg)
+
+## 4. The Diffing Algorithm (Reconciliation)
+
+React uses smart heuristics for fast O(n) diffing:
+
+- **Rule 1**: Different element types → entire subtree is replaced (state lost)
+- **Rule 2**: Same type → only changed props/attributes are updated
+- **Rule 3**: Lists must have stable `key` props for efficient add/move/remove
+
+```jsx
+// Recommended
+{items.map(item => <li key={item.id}>{item.name}</li>)}
+```
+
+## 5. Mental Model
+
+![Virtual DOM vs Real DOM — Mental Model](public/mental-model.svg)
+
+Think of the Virtual DOM as a cheap **blueprint** and the Real DOM as the actual **building**. React only patches the necessary bricks.
+
+## 6. Real DOM vs Virtual DOM Comparison
+
+| Property               | Real DOM                          | Virtual DOM                          |
+|------------------------|-----------------------------------|--------------------------------------|
+| Location               | Browser memory                    | JavaScript memory                    |
+| Creation               | Browser HTML parser               | React (`createElement`)              |
+| Update Cost            | Expensive (reflow + repaint)      | Very cheap                           |
+| Mutation               | Direct & slow                     | Free (old tree discarded)            |
+| When Updated           | Immediately                       | After reconciliation (batched)       |
+
+## 7. Code Example
+
+```jsx
+function PriceTag({ price }) {
+  return <span className="price">${price}</span>;
+}
+
+function App() {
+  const [price, setPrice] = useState(10);
+
+  return (
+    <div>
+      <h1>Product</h1>
+      <PriceTag price={price} />
+      <button onClick={() => setPrice(p => p + 1)}>
+        Increase price
+      </button>
+    </div>
+  );
+}
+```
+
+Clicking the button only updates the price `<span>` in the Real DOM — everything else stays untouched.
+
+## 8. Key Takeaways
+
+- Real DOM mutations are expensive.
+- Virtual DOM makes updates cheap and declarative.
+- Reconciliation finds minimal changes.
+- Always use `key` props on lists.
+- Changing element type (`<div>` → `<span>`) destroys the subtree.
+- This is the foundation of React Fiber (still used in React 18+ / 19+).
+
+**React Virtual DOM & Reconciliation Deep Dive**
+
+
+---
+
 ## React Project Structure
 
 | File/Folder | Description |
