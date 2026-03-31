@@ -200,10 +200,7 @@ React is NOT a full framework — you choose your own stack:
 - Reconciliation is the process of syncing the Virtual DOM to the actual DOM.
 - Tracks changes in component state and renders updated state to the screen.
 
-### Stack Reconciler (< React 16)
-- Synchronous
-- Works like a stack
-- Cannot be interrupted
+
 
 ### Fiber Reconciler (React 16+)
 - Asynchronous (new reconciliation engine in React v16)
@@ -212,6 +209,7 @@ React is NOT a full framework — you choose your own stack:
 - Separates reconciliation into two phases:
   - **Phase 1: Render/Processing** – React creates a list of all UI changes (can be interrupted)
   - **Phase 2: Commit** – React applies the changes to the real DOM (cannot be interrupted)
+
 
 ---
 
