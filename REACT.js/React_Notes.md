@@ -1341,6 +1341,405 @@ App
 
 ---
 
+# ⚛️ What are Hooks (Simple Explanation)
+
+In **React**:
+
+> 👉 Hooks are functions that let your component **remember things** and **react to changes**
+
+---
+
+## 🧠 Think Like This
+
+A normal function:
+
+```js
+function test() {
+  let count = 0;
+  count++;
+  console.log(count);
+}
+```
+
+👉 Every time you call it → `count` resets to 0
+
+---
+
+### But React component needs memory
+
+```jsx
+function Counter() {
+  const [count, setCount] = React.useState(0);
+
+  return <h1>{count}</h1>;
+}
+```
+
+👉 Now React **remembers count between renders**
+
+---
+
+# 🔥 Why Hooks Exist (In One Line)
+
+> Hooks = give **memory + lifecycle + logic reuse** to functional components
+
+---
+
+# 🧩  Hooks Types (Explained Simply)
+
+---
+
+# 🔹 1. useState → “Memory”
+
+> *Simple Explanation*: 👉 Normally, a function forgets everything once it finishes running. useState gives your component a memory. It lets you create a variable that React will remember, and when you update that variable, React automatically updates the screen to show the new value.
+
+Example: A simple click counter.
+
+👉 Used to store data
+
+```jsx
+import { useState } from 'react';
+
+function Counter() {
+  // We create a piece of memory called "count", starting at 0.
+  // "setCount" is the special tool we use to update "count".
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      {/* When the button is clicked, we tell React to update the memory */}
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+```
+
+
+### 📊 How it works
+ 
+![useState diagram](./public/01-usestate.svg)
+
+### 🧠 Simple idea:
+
+* `count` → value
+* `setCount` → update value
+
+👉 When you update → React re-renders
+
+---
+
+# 🔹 2. useEffect → “Do something after render”
+
+> *Explanation*:  👉 Sometimes your component needs to do things outside of just drawing the UI—like fetching data from the internet, setting a timer, or updating the browser tab's title. useEffect tells React: "Hey, finish drawing the screen first, and then go do this extra task."
+
+Example: Changing the browser tab title when the counter changes.
+
+👉 Used for:
+
+* API calls
+* timers
+* logging
+
+```jsx
+function App() {
+  React.useEffect(() => {
+    console.log("Page loaded");
+  }, []);
+
+  return <h1>Hello</h1>;
+}
+```
+
+
+---
+
+### With dependency:
+
+```jsx
+useEffect(() => {
+  console.log("Count changed");
+}, [count]);
+```
+
+👉 Runs only when `count` changes
+
+  ### 🧠 Simple idea:
+  
+  > “Run this code after UI is shown”
+
+
+### 📊 How it works
+ 
+![useEffect diagram](./public/02-useeffect.svg)
+---
+
+# 🔹 3. useRef → “Store value without re-render”
+
+> Explanation: 👉 useRef is like a sticky note that your component can write on. You can use it for two main things:  
+>To grab a direct reference to an actual HTML element (like an input box) so you can force it to do something, like be clicked or typed into.
+>To remember a value that changes, but without forcing React to redraw the screen (unlike useState).
+
+Example: Automatically focusing an input box when the page loads.
+
+👉 Like a hidden box
+
+```jsx
+function App() {
+  const ref = React.useRef(0);
+
+  function increase() {
+    ref.current++;
+    console.log(ref.current);
+  }
+
+  return <button onClick={increase}>Click</button>;
+}
+```
+
+### 🧠 Simple idea:
+
+> Value changes, but UI does NOT update
+
+### 📊 How it works
+ 
+![useRef diagram](./public/05-useref.svg)
+
+---
+
+# 🔹 4. useMemo → “Cache calculation”
+
+> Simple Explanation: Imagine a math problem that takes 10 seconds to solve. You don't want to re-solve it every time the screen blinks. useMemo solves it once, "remembers" the answer, and only re-calculates if the input numbers change. It's for performance.
+
+👉 Avoid re-running heavy code
+
+```jsx
+const result = React.useMemo(() => {
+  return num * 2;
+}, [num]);
+```
+
+### 🧠 Simple idea:
+
+> “Only recalculate when needed”
+
+### 📊 How it works
+ 
+![useMemo diagram](./public/06-usememo.svg)
+
+---
+
+# 🔹 5. useCallback → “Keep same function”
+
+> Simple Explanation: Every time a component re-renders, it creates its functions from scratch. Usually, that's fine. But if you're passing a function to a child component, it might think it's getting a "new" function every time. useCallback "locks" the function so it stays the same between renders.
+
+```jsx
+const handleClick = React.useCallback(() => {
+  console.log("Clicked");
+}, []);
+```
+
+### 🧠 Simple idea:
+
+> “Don’t recreate function again and again”
+
+
+### 📊 How it works
+ 
+![useCallback diagram](./public/07-usecallback.svg)
+---
+
+# 🔹 6. useContext → “Global data”
+
+> Simple Explanation: If you have data at the top of your app (like the user's logged-in name or a dark/light theme) and you need it way down at the bottom, passing it step-by-step through every component in between is annoying (this is called "prop drilling"). useContext acts like a teleporter, allowing you to grab that data directly from anywhere in your app.
+
+👉 Example: Checking if dark mode is on.
+
+👉 Avoid passing props everywhere
+
+```jsx
+import { useContext, createContext } from 'react';
+
+// 1. Create a "radio station" that broadcasts the theme
+const ThemeContext = createContext('light'); 
+
+function MyComponent() {
+  // 2. "Tune in" to the station to get the current theme directly!
+  const theme = useContext(ThemeContext); 
+
+  return <p>The current theme is {theme}.</p>;
+}
+```
+
+ 
+### 📊 How it works
+ 
+![useContext diagram](./public/03-usecontext.svg)
+
+### 🧠 Simple idea:
+
+> “Share data anywhere without props”
+
+---
+
+# 🔹 7. useReducer → “Advanced state”
+
+> Simple Explanation: If useState is like a simple sticky note, useReducer is like a professional office manager. Use it when you have a lot of states that change together (like a complex form or a game). Instead of saying "change this," you send an "action" (like "ADD_ITEM"), and the reducer follows a set of rules to update everything.
+
+👉 Like `useState` but better for complex logic
+
+```jsx
+import { useReducer } from 'react';
+
+// The "Rules": How state should change based on the "action"
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment': return { count: state.count + 1 };
+    case 'decrement': return { count: state.count - 1 };
+    default: return state;
+  }
+}
+
+function Counter() {
+  // state is the data, dispatch is the function to send "orders"
+  const [state, dispatch] = useReducer(reducer, { count: 0 });
+
+  return (
+    <>
+      Count: {state.count}
+      <button onClick={() => dispatch({ type: 'increment' })}>+</button>
+      <button onClick={() => dispatch({ type: 'decrement' })}>-</button>
+    </>
+  );
+}
+```
+
+### 📊 How it works
+ 
+![useReducer diagram](./public/04-usereducer.svg)
+
+---
+
+# 🔹 8. Custom Hook → “Reuse logic”
+
+> Simple Explanation: This is the coolest part of React. A Custom Hook is just a JavaScript function you write yourself that uses other hooks inside it. It allows you to copy-paste logic instead of code.
+
+> If you find yourself writing the same useState and useEffect logic in three different components (like checking if a user is online), you bundle them into a Custom Hook.
+
+Custom Hook Rules:
+
+>Its name must start with use (like useOnlineStatus).
+
+>It can call other hooks inside it.
+
+> 👉 Example: A hook that tells you if you are online.
+
+```jsx
+function useCounter() {
+  const [count, setCount] = React.useState(0);
+  return { count, setCount };
+}
+```
+
+👉 Use:
+
+```jsx
+function App() {
+  const { count, setCount } = useCounter();
+}
+```
+
+---
+
+# 🧠 Very Important Rule (Remember This)
+
+👉 Hooks must always run in the **same order**
+
+```jsx
+// ❌ Wrong
+if (true) {
+  useState(0);
+}
+```
+
+👉 React depends on order internally
+
+---
+
+# 🔄 How Hooks Work (Simple Flow)
+
+```txt
+1. Component runs
+2. Hooks run in order
+3. React stores values
+4. UI shows
+5. State changes → re-render
+```
+---
+
+# 🧠 Component as a Machine (Complete Version)
+
+Think of a component like a **machine**:
+
+* `useState` → 🧠 memory (stores data)
+* `useEffect` → ⚙️ side actions (runs after render)
+* `useRef` → 📦 hidden storage (no re-render)
+* `useContext` → 🌐 shared network (global data)
+* `useReducer` → 🧮 decision engine (complex state logic)
+* `useMemo` → 🧠 cached brain (remembers calculations)
+* `useCallback` → 🔁 stable function (prevents unnecessary re-renders)
+* `useLayoutEffect` → ⚡ pre-paint control (runs before UI shows)
+* Custom Hooks → 🧩 reusable modules (shared logic across components)
+
+---
+
+# ⚡ When to Use What (Complete & Simple)
+
+* Need to store simple data → `useState`
+* Need to run something after UI updates → `useEffect`
+* Need DOM access or store value without re-render → `useRef`
+* Need global/shared data → `useContext`
+* Need to handle complex state logic → `useReducer`
+* Need to optimize heavy calculation → `useMemo`
+* Need to prevent function re-creation → `useCallback`
+* Need to control layout before paint → `useLayoutEffect`
+* Need reusable logic across components → Custom Hooks
+
+---
+
+# 🧠 One-Line Understanding (Powerful)
+
+* `useState` → “remember value”
+* `useEffect` → “do something after render”
+* `useRef` → “store without re-render”
+* `useContext` → “share data globally”
+* `useReducer` → “handle complex updates”
+* `useMemo` → “don’t recalculate unnecessarily”
+* `useCallback` → “don’t recreate function unnecessarily”
+* `useLayoutEffect` → “run before screen updates”
+* Custom Hook → “reuse logic cleanly”
+
+---
+
+# ⚛️ React Hooks Cheat Sheet
+
+| Hook              | When to use it?                                                                                          |
+| ----------------- | -------------------------------------------------------------------------------------------------------- |
+| `useState`        | When you need to store and update simple data (like counters, input values, toggles).                    |
+| `useEffect`       | When you need to run code after render (API calls, timers, subscriptions, side effects).                 |
+| `useRef`          | When you need to store a value without causing re-render OR access DOM elements directly.                |
+| `useContext`      | When you want to share data across many components without passing props manually (avoid prop drilling). |
+| `useReducer`      | When `useState` gets messy or you have complex state logic (multiple conditions, actions).               |
+| `useMemo`         | To avoid re-running expensive calculations on every render (performance optimization).                   |
+| `useCallback`     | To keep a function "stable" so child components don’t re-render unnecessarily.                           |
+| `useLayoutEffect` | When you need to run code before the browser paints (DOM measurement, layout fixes).                     |
+| Custom Hooks      | To reuse the same logic across multiple components (clean and scalable code).                            |
+
+---
+
+
 ## React.StrictMode
 
 - A tool for highlighting potential problems in a React application.
