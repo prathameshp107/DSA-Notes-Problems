@@ -1878,7 +1878,7 @@ function App() {
 
 ---
 
-# 🧠 When to Use Fragments
+## 🧠 When to Use Fragments
 
 ## ✅ 1. Avoid unnecessary wrapper
 
@@ -1892,48 +1892,212 @@ function App() {
 
 ---
 
-# 🧠 Final Mental Model
+## 🧠 Final Mental Model
 
 > Fragment = invisible wrapper
 
 ---
 
-# 🔥 One-Line Summary
+## 🔥 One-Line Summary
 
 > Use Fragment when you need a wrapper in React, but **don’t want it in the DOM**
 
 
 ---
 
-## Data Binding & CSS
+# Data Binding
 
-### Data Binding
 
-| Type | Description | React Example |
-|------|-------------|---------------|
-| One-way Binding | State → UI | `{value}` |
-| Two-way Binding | State ↔ UI using onChange | `value + onChange` |
+## ⚛️ What is Data Binding?
 
-### CSS in React
+In **React**:
 
-Different ways to add CSS:
-1. Inline CSS
-2. External CSS
-3. Global CSS (`index.css`)
-4. **CSS Modules**
-5. Conditional CSS
+> 👉 Data binding = how data moves between **UI (DOM)** and **JavaScript (state)**
 
-### CSS Modules
+---
 
-- Fixes the problem of global scope in CSS.
-- All class names are scoped locally by default.
-- Prevents naming clashes across files.
-- Auto-generates unique class names in format: `[filename]_[classname]__[hash]`
+## 🔁 Types of Data Binding
 
-```js
-import styles from './Button.module.css';
-<button className={styles.error}>Error Button</button>
+There are mainly **2 types**:
+
+1. One-way binding
+2. Two-way binding
+
+---
+
+## 🔹 1. One-Way Data Binding (React’s Default ✅)
+
+> 👉 Data flows in ONE direction
+> **State → UI**
+
+---
+
+## 🧠 How it works
+
+```txt
+State → UI (Render)
 ```
+
+👉 React controls everything from state
+
+---
+
+## ✅ Example
+
+```jsx id="4jqek7"
+function App() {
+  const [name, setName] = React.useState("Prathamesh");
+
+  return <h1>{name}</h1>;
+}
+```
+
+👉 Flow:
+
+* State = `"Prathamesh"`
+* UI shows it
+
+---
+
+## 🧠 Key Idea
+
+> UI is just a reflection of state
+
+---
+
+## 🔹 2. Two-Way Data Binding
+
+> 👉 Data flows BOTH ways
+> **State ↔ UI**
+
+---
+
+## Example (Conceptually)
+
+```txt
+State → Input field  
+Input change → State update
+```
+
+---
+
+## ⚛️ React Way (Controlled Component)
+
+React doesn’t give automatic two-way binding like Angular
+👉 You create it manually
+
+---
+
+## ✅ Example
+
+```jsx id="4cr3bb"
+function App() {
+  const [name, setName] = React.useState("");
+
+  return (
+    <input
+      value={name}
+      onChange={(e) => setName(e.target.value)}
+    />
+  );
+}
+```
+
+---
+
+## 🧠 Flow Explained
+
+```txt
+State → input value  
+User types → onChange → updates state  
+State updates → UI updates
+```
+
+👉 Looks like two-way, but actually:
+
+> ⚠️ It’s still ONE-WAY + event handling
+
+---
+
+# 🔥 Important Insight (Very Important)
+
+👉 React ALWAYS follows:
+
+> **One-way data flow**
+
+Even in “two-way binding” case:
+
+* UI does NOT directly change state
+* It sends an event → then state updates
+
+---
+
+# 🧠 Visual Understanding
+
+### One-way binding
+
+```txt
+State → UI
+```
+
+---
+
+### React “Two-way” (actual flow)
+
+```txt
+State → UI  
+UI → Event → State update → UI
+```
+
+---
+
+## ⚖️ React vs Angular (Quick Insight)
+
+* Angular → true two-way binding (automatic)
+* React → controlled, explicit binding
+
+👉 React gives more control and predictability
+
+---
+
+## 🧠 Why React Uses One-Way Binding
+
+* Easier debugging
+* Predictable data flow
+* Better performance
+* Scalable architecture
+
+---
+
+# ⚡ Real Example (Putting It Together)
+
+```jsx id="99ipfa"
+function Form() {
+  const [email, setEmail] = React.useState("");
+
+  return (
+    <div>
+      <input
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <p>Your email: {email}</p>
+    </div>
+  );
+}
+```
+
+👉 Flow:
+
+* Input updates state
+* State updates UI
+
+---
+
+# 🧠 Final Understanding
+
+> React = One-way data flow
+> “Two-way binding” = manually controlled via events
 
 ---
 
@@ -1990,352 +2154,562 @@ import EmployeeArr from './employees.json';
 
 ---
 
-## Props
+# React Events
 
-- Props are **inputs to components**.
-- Props stand for **properties** — a special keyword in React.
-- Pass custom data from **parent to child** (uni-directional flow).
-- Props are **immutable** — child components should not change them.
 
-```jsx
-<ChildComponent someAttribute={value} anotherAttribute={value} />
+## ⚛️ What are React Events?
 
-// Access in class component
-this.props.propName
+In **React**:
 
-// Access in functional component
-props.propName
-```
+> 👉 Events are actions that happen in the UI
+> (like click, typing, submit, hover)
 
-### Props Destructuring
+React lets you **listen to these events and run code**.
 
-```jsx
-// Functional Component
-export default function Greet({ name, msg }) {}
+---
 
-// Class Component
-let { pId, name, price } = this.props.product;
-```
+## 🧠 Simple Idea
 
-### PropTypes
+> User does something → React catches it → your function runs
 
-```bash
-npm install prop-types
-```
+---
 
-```js
-import PropTypes from 'prop-types';
-
-ComponentName.propTypes = {
-  name: PropTypes.string,
-  age: PropTypes.number,
-  optionalArray: PropTypes.array,
-  optionalBool: PropTypes.bool,
-  optionalFunc: PropTypes.func,
-  optionalEnum: PropTypes.oneOf(['News', 'Photos']),
-  optionalObjectWithShape: PropTypes.shape({
-    color: PropTypes.string,
-    fontSize: PropTypes.number,
-  }),
-};
-```
-
-### Requiring Props
-
-```js
-Student.propTypes = {
-  name: PropTypes.string.isRequired, // Required
-  age: PropTypes.number,             // Optional
-};
-```
-
-### Default Props
-
-```js
-Greet.defaultProps = {
-  msg: 'this is my default message'
-};
-
-// OR destructuring
-export default function Greet({ name, msg = 'good morning' }) {}
-```
-
-### Props.children
+## 🔥 Basic Example
 
 ```jsx
-<Welcome>Hello world!</Welcome>
-
-class Welcome extends React.Component {
-  render() {
-    return <p>{this.props.children}</p>;
+function App() {
+  function handleClick() {
+    alert("Button clicked!");
   }
+
+  return <button onClick={handleClick}>Click Me</button>;
 }
 ```
 
-### Prop Drilling
+👉 Flow:
 
-- Passing props through components that don't need the data.
-- Creates issues with component reusability and performance.
-- Solved by **Context API** or **Redux**.
+```txt
+User clicks → onClick → handleClick() runs
+```
 
 ---
 
-## State
+## ⚠️ Important Syntax Difference (HTML vs React)
 
-- The State of a component is an object that holds data that may **change over the component's lifetime**.
-- When state changes, React **re-renders** the component.
-- States are **mutable** and **local** to the component.
+### ❌ HTML
 
-### Why State Variables (vs Local Variables)?
-
-| Local Variable | State Variable |
-|----------------|----------------|
-| Changing doesn't re-render | Changing triggers re-render |
-| Re-created on each render (no persistence) | Persisted across re-renders |
-
-### State in Class Component
-
-```js
-// Initialize in constructor
-this.state = { counter: 0 };
-
-// Update with setState
-this.setState({ counter: this.state.counter + 1 });
-
-// setState is asynchronous — use callback for post-update code
-this.setState({ counter: 1 }, () => { /* runs after update */ });
-
-// Update based on previous state
-this.setState(prevState => ({ value: prevState.value + 1 }));
+```html
+<button onclick="handleClick()">Click</button>
 ```
-
-### State in Functional Component
-
-```js
-const [count, setCount] = useState(0);
-
-// Update based on previous state
-setCount(prevState => prevState + 1);
-
-// Code after state update — use useEffect
-```
-
-### Props vs State
-
-| Props | State |
-|-------|-------|
-| Immutable | Mutable |
-| Passed from parent to child | Contains own data, changes over time |
-| For component communication | For rendering dynamic changes |
-| `props` (Functional), `this.props` (Class) | `useState()` (Functional), `this.state={}` (Class) |
 
 ---
 
-## React Events
-
-- React events are written in **camelCase**: `onClick`, `onChange`
-- Event handlers written inside **curly braces**: `onClick={shoot}`
-- Use **arrow functions** so `this` refers to the component.
+### ✅ React
 
 ```jsx
-<button onClick={shoot}>Take the Shot!</button>       // calls on click
-<button onClick={shoot()}>Take the Shot!</button>     // calls on load (wrong!)
+<button onClick={handleClick}>Click</button>
 ```
 
-### Binding `this` in Class Components
+👉 Differences:
 
-```js
-// Arrow function (recommended)
-shoot = (a) => { alert(a); }
-<button onClick={() => this.shoot("Goal")}>Take the shot!</button>
+* CamelCase (`onClick`)
+* Pass function, don’t call it
 
-// Bind in constructor
-constructor(props) {
-  super(props);
-  this.f1 = this.f1.bind(this);
+---
+
+## 🧩 Common React Events
+
+## 🔹 Mouse Events
+
+* `onClick`
+* `onDoubleClick`
+* `onMouseEnter`
+* `onMouseLeave`
+
+---
+
+## 🔹 Keyboard Events
+
+* `onKeyDown`
+* `onKeyUp`
+
+---
+
+## 🔹 Form Events
+
+* `onChange`
+* `onSubmit`
+* `onFocus`
+* `onBlur`
+
+---
+
+## 🧠 Example: Input Event
+
+```jsx
+function App() {
+  const [value, setValue] = React.useState("");
+
+  return (
+    <input
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+    />
+  );
 }
 ```
 
-### Single Event Handler for Multiple Inputs
+👉 User types → event → state updates → UI updates
 
-```js
-const changeHandler = (e) => {
-  const { name, value } = e.target;
-  this.setState({ [name]: +value });
-};
-```
+---
 
-### SyntheticEvent
+## 📦 What is Event Object?
 
-- `SyntheticEvent` is a cross-browser wrapper around the browser's native event.
-- React event handlers receive `SyntheticEvent` instead of the native event.
+Every event gives an object:
 
 ```jsx
-// Bubbling phase
-<button onClick={f1}>click me</button>
+function handleClick(e) {
+  console.log(e);
+}
+```
 
-// Capture phase
-<button onClickCapture={f1}>click me</button>
+👉 `e` = event object
+
+---
+
+## 🔍 Example
+
+```jsx
+function App() {
+  function handleChange(e) {
+    console.log(e.target.value);
+  }
+
+  return <input onChange={handleChange} />;
+}
+```
+
+👉 `e.target.value` = input value
+
+---
+
+## 🔥 Synthetic Events (Important)
+
+React uses:
+
+> 👉 **Synthetic Events** (wrapper around browser events)
+
+👉 Why?
+
+* Cross-browser compatibility
+* Same behavior everywhere
+
+---
+
+## 🧠 Passing Arguments to Events
+
+### ❌ Wrong
+
+```jsx
+<button onClick={handleClick(5)}>Click</button>
+```
+
+👉 This runs immediately
+
+---
+
+### ✅ Correct
+
+```jsx
+<button onClick={() => handleClick(5)}>Click</button>
 ```
 
 ---
 
-## Component Communication
+# 🔁 Prevent Default Behavior
 
-- **Parent → Child:** Props
-- **Child → Parent:** Callback and states
-- **Between Siblings:** Combine the above two
+Example: form submit reloads page
 
-### Child to Parent
-
-```js
-// 1. Define a function in parent
-// 2. Pass function as prop to child
-// 3. Call this.props.callback(data) in the child
+```jsx
+function handleSubmit(e) {
+  e.preventDefault();
+  console.log("Form submitted");
+}
 ```
 
 ---
 
-## PureComponent & Memo
+# 🔄 Event Bubbling (Important Concept)
 
-### PureComponent
+👉 Events move from child → parent
 
-- Same as `Component` but handles `shouldComponentUpdate` automatically.
-- Does a **shallow comparison** on props and state.
-- Only re-renders if props/state actually changed.
-
-```js
-class myComp extends React.PureComponent {}
+```jsx
+<div onClick={() => console.log("Parent")}>
+  <button onClick={() => console.log("Child")}>
+    Click
+  </button>
+</div>
 ```
 
-> In Functional Components, every component is a PureComponent by default — re-render happens only when state/props change.
+👉 Output:
 
-### React.memo()
-
-- Higher-order component/function (React 16.6+).
-- Renders a component **only if its props change**.
-- Used with child components receiving props.
-
-```js
-export default React.memo(MyComponent);
 ```
-
-### useMemo()
-
-- Memoizes an **expensive computed value**.
-- Only re-computes when dependencies change.
-
-```js
-const calculation = useMemo(() => expensiveCalculation(count), [count]);
-```
-
-### useCallback()
-
-- Memoizes a **callback function**.
-- Prevents re-rendering child components that receive functions as props.
-
-```js
-const addTodo = useCallback(() => {
-  setTodos(t => [...t, "New Todo"]);
-}, []);
+Child
+Parent
 ```
 
 ---
 
-## Lifecycle Hooks
+## 🛑 Stop Bubbling
 
-Every React class component goes through three phases:
+```jsx
+function handleClick(e) {
+  e.stopPropagation();
+}
+```
 
-### 1. Mounting
+---
 
-Order: `constructor` → `getDerivedStateFromProps` → `render` → `componentDidMount`
+# 🧠 Real Example (Everything Together)
 
-**constructor()**
-- Called first when component is initiated.
-- Natural place to set initial state.
-- Always call `super(props)` first.
-- Do NOT call `setState()` in constructor.
+```jsx
+function Form() {
+  const [name, setName] = React.useState("");
 
-**static getDerivedStateFromProps(props, state)**
-- Called right before rendering.
-- Returns object with state changes based on props.
+  function handleSubmit(e) {
+    e.preventDefault();
+    alert(name);
+  }
 
-**render()**
-- Required method that outputs HTML to the DOM.
-- Re-invoked when state/props changes.
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+```
+---
 
-**componentDidMount()**
-- Called after component is rendered.
-- Best place for **API calls** and **DOM manipulation**.
+# 🧠 Final Mental Model
 
-### 2. Updating
+> Event = user action → React handler → state update → UI update
 
-Order: `getDerivedStateFromProps` → `shouldComponentUpdate` → `render` → `getSnapshotBeforeUpdate` → `componentDidUpdate`
+---
 
-**shouldComponentUpdate()**
-- Returns a boolean specifying whether to continue rendering.
-- Default is `true`.
+# 🔥 One-Line Summary
 
-**getSnapshotBeforeUpdate(prevProps, prevState)**
-- Access to props and state before the update.
+> React events connect **user actions → your logic → UI updates**
 
-**componentDidUpdate()**
-- Called after component is updated in the DOM.
-- Not called for the initial render.
+---
 
-### 3. Unmounting
+# Lifecycle Hooks
 
-**componentWillUnmount()**
-- Called immediately before component is destroyed.
-- Use for cleanup: cancel network requests, clear timers, unsubscribe, detach event handlers.
 
-### useEffect() — Functional Component Equivalent
+## ⚛️ What is React Lifecycle?
 
-```js
-// Runs once on mount (like componentDidMount)
-useEffect(() => {}, []);
+In **React**:
 
-// Runs on every state change (no 2nd argument)
-useEffect(() => {});
+> 👉 Lifecycle = the different stages a component goes through from **creation → update → removal**
 
-// Runs when 'count' changes (like componentDidUpdate)
-useEffect(() => {}, [count]);
+---
 
-// Cleanup on unmount (like componentWillUnmount)
+## 🧠 Modern React Reality (IMPORTANT)
+
+👉 Earlier (class components):
+
+* lifecycle methods (`componentDidMount`, etc.)
+
+👉 Now (functional components):
+
+* Lifecycle is handled using **Hooks (`useEffect`)**
+
+---
+
+## 🔥 3 Phases of React Lifecycle
+
+```txt
+1. Mounting  (component created)
+2. Updating  (component changes)
+3. Unmounting (component removed)
+```
+
+---
+
+## 🟢 1. Mounting Phase (Component Creation)
+
+> 👉 When component is first rendered on screen
+
+> This is when a component appears on screen for the first time. React runs your component function, builds the virtual DOM, paints to the real DOM, then fires useEffect with an empty [] dependency array. This is your "componentDidMount" equivalent — perfect for fetching initial data, setting up subscriptions, or initializing third-party libraries.
+
+---
+
+## 🧠 What Happens Internally?
+
+1. Function runs
+2. JSX returned
+3. DOM created
+4. UI shown
+
+---
+
+## ✅ Example
+
+```jsx
+function App() {
+  React.useEffect(() => {
+    console.log("Component Mounted");
+  }, []);
+
+  return <h1>Hello</h1>;
+}
+```
+
+---
+
+## 🔍 Explanation
+
+* `useEffect(() => {}, [])`
+  👉 Runs ONLY once → after first render
+
+---
+
+## 🧠 Interview Line
+
+> “Mounting is when the component is created and inserted into the DOM. In functional components, we handle it using `useEffect` with an empty dependency array.”
+
+---
+
+## 🔄 2. Updating Phase (Re-render)
+
+> 👉 Happens when:
+
+> Every time state or props change, React re-runs your component function and compares (diffing) the new virtual DOM against the old one. Only the changed parts are updated in the real DOM. useEffect with dependencies fires after every relevant update — React always runs the cleanup of the previous effect before running the new one.
+
+* State changes
+* Props change
+
+---
+
+## 🧠 What Happens Internally?
+
+1. State/props change
+2. Component function runs again
+3. React compares (Virtual DOM)
+4. Updates only changed parts
+
+---
+
+## ✅ Example
+
+```jsx
+function Counter() {
+  const [count, setCount] = React.useState(0);
+
+  React.useEffect(() => {
+    console.log("Component Updated");
+  }, [count]);
+
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      {count}
+    </button>
+  );
+}
+```
+
+---
+
+## 🔍 Explanation
+
+* When `count` changes → re-render
+* `useEffect` runs again because `[count]` changed
+
+---
+
+## 🧠 Interview Line
+
+> “Updating occurs when state or props change. React re-renders the component and updates the DOM efficiently using the Virtual DOM.”
+
+---
+
+## 🔴 3. Unmounting Phase (Component Removal)
+
+> 👉 When component is removed from DOM
+
+> When a component is removed, React runs the cleanup function returned from useEffect. This is where you cancel timers, remove event listeners, or unsubscribe from streams — critical for preventing memory leaks.
+
+
+---
+
+## 🧠 What Happens?
+
+* Cleanup runs
+* Memory cleared
+* Subscriptions removed
+
+---
+
+## ✅ Example
+
+```jsx
+function App() {
+  React.useEffect(() => {
+    console.log("Mounted");
+
+    return () => {
+      console.log("Component Unmounted");
+    };
+  }, []);
+
+  return <h1>Hello</h1>;
+}
+```
+
+---
+
+## 🔍 Explanation
+
+* Return function = cleanup
+* Runs when component is removed
+
+---
+
+## 🧠 Interview Line
+
+> “Unmounting is when the component is removed from the DOM. Cleanup functions inside `useEffect` are used to release resources like timers or subscriptions.”
+
+---
+
+### 📊 How it works
+ 
+![useReducer diagram](./public/react_lifecycle_hooks.svg)
+
+## 🔥 Full Lifecycle in One Example
+
+```jsx
+function Example({ value }) {
+  const [count, setCount] = React.useState(0);
+
+  // Mount + Update
+  React.useEffect(() => {
+    console.log("Mounted or Updated");
+
+    return () => {
+      console.log("Cleanup before next run or unmount");
+    };
+  }, [count]);
+
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      {count}
+    </button>
+  );
+}
+```
+
+---
+
+## 🧠 Lifecycle Mapping (VERY IMPORTANT)
+
+| Phase   | Hook Usage                           |
+| ------- | ------------------------------------ |
+| Mount   | `useEffect(() => {}, [])`            |
+| Update  | `useEffect(() => {}, [deps])`        |
+| Unmount | `return () => {}` inside `useEffect` |
+
+---
+
+## 🔍 Important Deep Concepts (Interview Level)
+
+## 🔹 1. useEffect Runs AFTER Render
+
+👉 React first updates UI → then runs effect
+
+---
+
+## 🔹 2. Cleanup Runs BEFORE Next Effect
+
+```txt
+Old effect cleanup → New effect runs
+```
+
+---
+
+## 🔹 3. Multiple useEffects
+
+```jsx
 useEffect(() => {
-  return () => { /* cleanup */ };
+  console.log("Effect 1");
+}, []);
+
+useEffect(() => {
+  console.log("Effect 2");
 }, []);
 ```
 
-### useLayoutEffect()
-
-- Fires **before** the browser repaints the screen.
-- Runs synchronously after all DOM mutations.
-- Use when you need to mutate the DOM inside the effect.
+👉 They run independently
 
 ---
 
-## Refs
+## 🔹 4. Strict Mode (Important)
 
-- Provide a way to access DOM nodes or React elements.
-- Used to manage focus, text selection, animations.
+In development:
 
-```js
-// Class Component
-this.myRef1 = React.createRef();
+👉 React may run effects twice (for safety)
 
-// Functional Component
-const myRef1 = useRef();
+---
 
-// Callback Ref
-<input ref={x => inputRef1 = x} />
+## ⚡ Class vs Functional Lifecycle (Interview Comparison)
+
+| Class                | Functional        |
+| -------------------- | ----------------- |
+| componentDidMount    | useEffect([], []) |
+| componentDidUpdate   | useEffect([deps]) |
+| componentWillUnmount | cleanup function  |
+
+---
+
+## 🧠 Real-World Example (API Call)
+
+```jsx
+function Users() {
+  const [users, setUsers] = React.useState([]);
+
+  React.useEffect(() => {
+    fetch("https://api.com/users")
+      .then(res => res.json())
+      .then(data => setUsers(data));
+  }, []);
+
+  return users.map(user => <p key={user.id}>{user.name}</p>);
+}
 ```
 
-- **Ref Forwarding** — lets components pass/forward a ref to a child.
+👉 Mount → fetch → update → render
 
 ---
 
-## Forms
+## 🔥 Final Mental Model
+
+```txt
+Mount → Show UI → Run effect  
+Update → Re-render → Run effect  
+Unmount → Cleanup
+```
+
+---
+
+## ⚡ Interview-Ready Summary
+
+> “React lifecycle has three phases: Mounting, Updating, and Unmounting. In modern React, we manage these using `useEffect`. Mounting runs once, updating runs on dependency changes, and unmounting is handled via cleanup functions.”
+
+---
+
+# Forms
 
 - React uses forms to collect user data.
 - Use `event.target.value` for field value, `event.target.name` for field name.
