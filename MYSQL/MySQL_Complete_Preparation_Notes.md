@@ -373,124 +373,379 @@ CREATE TABLE products (
 
 ## 6. Joins
 
+# SQL Joins — Complete Visual Guide
+
+---
+
+## Setup: The Sample Data
+
+Before diving in, here are the two tables used throughout all examples. Refer back here whenever you need to trace a result.
+
+```
+Table A — employees                    Table B — departments
+┌────┬────────┬─────────┬────────────┐  ┌─────────┬────────────┐
+│ id │  name  │ dept_id │ manager_id │  │ dept_id │  dept_name │
+├────┼────────┼─────────┼────────────┤  ├─────────┼────────────┤
+│  1 │ Alice  │    1    │    NULL    │  │    1    │ Engineering│
+│  2 │ Bob    │    2    │      1     │  │    2    │  Marketing │
+│  3 │ Carol  │   NULL  │      1     │  │    3    │   Finance  │
+│  4 │ David  │    4    │      2     │  └─────────┴────────────┘
+└────┴────────┴─────────┴────────────┘
+```
+
+**Three edge cases that matter:**
+- `Carol` has `dept_id = NULL` — she has no department assigned
+- `David` has `dept_id = 4` — that department does not exist in the departments table
+- `Finance` (dept_id 3) has no employees assigned to it
+
+These three cases determine what each join type includes or excludes.
+
+---
+
+## 1. INNER JOIN
+
+### What it does
+Returns **only the rows where a match exists in both tables**. Any row in either table that has no matching row in the other table is completely dropped from the result.
+
+Think of it as the **strictest** join — it requires both sides to agree.
+
 ### Visual Diagram
 
-```
-Table A (employees)          Table B (departments)
-┌────┬────────┬─────────┐   ┌─────────┬────────────┐
-│ id │  name  │ dept_id │   │ dept_id │  dept_name │
-├────┼────────┼─────────┤   ├─────────┼────────────┤
-│  1 │ Alice  │    1    │   │    1    │ Engineering│
-│  2 │ Bob    │    2    │   │    2    │  Marketing │
-│  3 │ Carol  │   NULL  │   │    3    │   Finance  │
-│  4 │ David  │    4    │   └─────────┴────────────┘
-└────┴────────┴─────────┘    dept_id=3 has no employees
-                              Carol has no dept
-                              David's dept=4 doesn't exist
-```
+![useState diagram](./../public/INNER-JOIN-SVG.svg)
 
-### INNER JOIN
-Returns rows that have matching values in BOTH tables.
 
-```
-    A    B
-  (  (█)  )   ← only the intersection
-```
-
+### SQL
 ```sql
 SELECT e.name, d.dept_name
 FROM employees e
 INNER JOIN departments d ON e.dept_id = d.dept_id;
--- Result: Alice(Engineering), Bob(Marketing)
--- Carol (NULL dept) and David (dept 4 missing) are excluded
 ```
 
-### LEFT JOIN (LEFT OUTER JOIN)
-Returns ALL rows from the left table + matching rows from right. Non-matching right rows are NULL.
+### Result
+| name  | dept_name   |
+|-------|-------------|
+| Alice | Engineering |
+| Bob   | Marketing   |
 
-```
-    A    B
-  (████)  )   ← all of A, matching B
-```
+### Why Carol and David are excluded
+- **Carol**: her `dept_id` is `NULL`. In SQL, `NULL = 1` is not `TRUE` — it is `UNKNOWN`. The `ON` clause requires `TRUE`, so Carol never matches any department row.
+- **David**: his `dept_id = 4`, but no row in the departments table has `dept_id = 4`. No match → excluded.
+- **Finance** (dept_id 3): no employee has `dept_id = 3`. No match → excluded from the result.
 
+### When to use INNER JOIN
+Use it when you **only care about records that have complete data on both sides** — e.g., orders with valid customers, employees with valid departments.
+
+---
+
+## 2. LEFT JOIN (LEFT OUTER JOIN)
+
+### What it does
+Returns **all rows from the left table**, plus matching rows from the right table. Where there is no match on the right side, columns from the right table are filled with `NULL`.
+
+The left table is never filtered. It is the "anchor."
+
+### Visual Diagram
+
+![useState diagram](./../public/LEFT-JOIN-SVG.svg)
+
+
+### SQL
 ```sql
 SELECT e.name, d.dept_name
 FROM employees e
 LEFT JOIN departments d ON e.dept_id = d.dept_id;
--- Result: Alice(Engineering), Bob(Marketing), Carol(NULL), David(NULL)
--- Carol and David included, dept_name = NULL where no match
 ```
 
-### RIGHT JOIN (RIGHT OUTER JOIN)
-Returns ALL rows from the right table + matching rows from left.
+### Result
+| name  | dept_name   |
+|-------|-------------|
+| Alice | Engineering |
+| Bob   | Marketing   |
+| Carol | NULL        |
+| David | NULL        |
 
-```
-    A    B
-  (  (████)   ← matching A, all of B
-```
+### Key observations
+- Carol and David appear because they are in the **left** table (employees), even though their `dept_id` has no match in departments.
+- Finance does **not** appear because it exists only in the **right** table.
+- `NULL` in `dept_name` tells you "this employee has no valid department."
 
+### When to use LEFT JOIN
+This is the **most commonly used join** in practice. Use it when:
+- You want all records from one table, and optionally related data from another.
+- You're checking for missing relationships: `WHERE d.dept_id IS NULL` after a LEFT JOIN finds all employees with no department.
+
+---
+
+## 3. RIGHT JOIN (RIGHT OUTER JOIN)
+
+### What it does
+The mirror image of LEFT JOIN. Returns **all rows from the right table**, plus matching rows from the left. Non-matching left-side columns become `NULL`.
+
+### Visual Diagram
+
+![useState diagram](./../public/RIGHT-JOIN.svg)
+
+
+### SQL
 ```sql
 SELECT e.name, d.dept_name
 FROM employees e
 RIGHT JOIN departments d ON e.dept_id = d.dept_id;
--- Result: Alice(Engineering), Bob(Marketing), NULL(Finance)
--- Finance dept included even with no employees
 ```
 
-### FULL OUTER JOIN
-Returns ALL rows from both tables. MySQL doesn't support FULL OUTER JOIN natively — use UNION.
+### Result
+| name  | dept_name   |
+|-------|-------------|
+| Alice | Engineering |
+| Bob   | Marketing   |
+| NULL  | Finance     |
 
-```
-    A    B
-  (████████)  ← everything from both
+### Key observations
+- Finance appears even though no employee belongs to it. It is in the **right** table (departments), so it is always included.
+- Carol and David do **not** appear — they are in the left table and have no match in the right table.
+- `NULL` in `name` means "this department has no assigned employees."
+
+### Practical tip
+RIGHT JOIN is rarely needed. Any RIGHT JOIN can be rewritten as a LEFT JOIN by **swapping the table order**:
+```sql
+-- These two queries produce identical results:
+SELECT e.name, d.dept_name
+FROM employees e RIGHT JOIN departments d ON e.dept_id = d.dept_id;
+
+-- Equivalent LEFT JOIN (more readable):
+SELECT e.name, d.dept_name
+FROM departments d LEFT JOIN employees e ON e.dept_id = d.dept_id;
 ```
 
+---
+
+## 4. FULL OUTER JOIN
+
+### What it does
+Returns **all rows from both tables**. Where there is no match on either side, the missing columns are `NULL`. It is the union of LEFT JOIN and RIGHT JOIN.
+
+### Visual Diagram
+
+![useState diagram](./../public/FULL-OUTER-JOIN.svg)
+
+### SQL (Standard — PostgreSQL, SQL Server, Oracle)
+```sql
+SELECT e.name, d.dept_name
+FROM employees e
+FULL OUTER JOIN departments d ON e.dept_id = d.dept_id;
+```
+
+### SQL (MySQL workaround — MySQL does not support FULL OUTER JOIN)
 ```sql
 SELECT e.name, d.dept_name
 FROM employees e
 LEFT JOIN departments d ON e.dept_id = d.dept_id
+
 UNION
+
 SELECT e.name, d.dept_name
 FROM employees e
 RIGHT JOIN departments d ON e.dept_id = d.dept_id;
--- Result: All employees + all departments
+```
+> `UNION` (without `ALL`) deduplicates rows, so matching rows (Alice, Bob) appear only once.
+
+### Result
+| name  | dept_name   |
+|-------|-------------|
+| Alice | Engineering |
+| Bob   | Marketing   |
+| Carol | NULL        |
+| David | NULL        |
+| NULL  | Finance     |
+
+### When to use FULL OUTER JOIN
+Use it when doing **data reconciliation** — finding rows that exist in one source but not the other. Adding a `WHERE` clause makes it a powerful mismatch detector:
+
+```sql
+-- Find employees with no department AND departments with no employees
+SELECT e.name, d.dept_name
+FROM employees e
+FULL OUTER JOIN departments d ON e.dept_id = d.dept_id
+WHERE e.dept_id IS NULL OR d.dept_id IS NULL;
 ```
 
-### CROSS JOIN
-Returns the Cartesian product — every row in A paired with every row in B.
+---
 
+## 5. CROSS JOIN
+
+### What it does
+Produces the **Cartesian product** — every row in the left table is paired with every row in the right table. There is no `ON` condition. With 4 employees and 3 departments, the result is `4 × 3 = 12` rows.
+
+### Visual Diagram
+
+![useState diagram](./../public/CROSS-JOIN.svg)
+
+
+### SQL
 ```sql
 SELECT e.name, d.dept_name
 FROM employees e
 CROSS JOIN departments d;
--- 4 employees × 3 departments = 12 rows
--- Use case: generating combinations
 ```
 
-### SELF JOIN
-A table joined with itself.
+### Output size rule
+`rows_in_A × rows_in_B = output rows`
 
+**Warning:** On large tables, CROSS JOINs are extremely expensive. A table of 1,000 rows crossed with another 1,000-row table yields 1,000,000 rows.
+
+### Real-world use cases
+- Generating all possible combinations (e.g., size × color for product variants)
+- Creating test data
+- Building a calendar — cross joining a list of dates with a list of time slots
+
+---
+
+## 6. SELF JOIN
+
+### What it does
+Joins a table **with itself**. You use table aliases to treat the same table as if it were two separate tables. This is essential for hierarchical or recursive data like org charts, category trees, or social networks.
+
+### Visual Diagram
+
+![useState diagram](./../public/SELF-JOIN.svg)
+
+
+### SQL
 ```sql
--- Find employees and their managers (manager_id references same table)
-SELECT e.name AS employee, m.name AS manager
+-- Find each employee and their manager's name
+SELECT
+    e.name   AS employee,
+    m.name   AS manager
 FROM employees e
 LEFT JOIN employees m ON e.manager_id = m.id;
 ```
 
-### Join Summary Table
+### Result
+| employee | manager |
+|----------|---------|
+| Alice    | NULL    |
+| Bob      | Alice   |
+| Carol    | Alice   |
+| David    | Bob     |
 
-| Join Type | Returns |
-|---|---|
-| INNER JOIN | Rows matching in BOTH tables |
-| LEFT JOIN | All from left + matching from right (NULLs for no match) |
-| RIGHT JOIN | All from right + matching from left (NULLs for no match) |
-| FULL OUTER | All from both (NULLs where no match) |
-| CROSS JOIN | Every combination (Cartesian product) |
-| SELF JOIN | Table joined with itself |
+### How it works
+The key is aliasing the same table twice — `e` for "the employee row" and `m` for "the manager row." The join condition `e.manager_id = m.id` follows the reference from the employee's `manager_id` back to another row in the same table.
 
-> **Interview Tip:** LEFT JOIN is used far more than RIGHT JOIN in practice. You can always rewrite a RIGHT JOIN as a LEFT JOIN by swapping table order.
+We use a `LEFT JOIN` (not `INNER JOIN`) so that Alice (who has no manager) still appears in the result with `NULL`.
+
+### Other self-join use cases
+- **Category trees**: `parent_id` references `id` in the same categories table
+- **Friend networks**: `user_id` and `friend_id` both reference the `users` table
+- **Version chains**: each record has a `previous_version_id` pointing to an earlier row
 
 ---
+
+## 7. Exclusion Joins (Anti-Joins)
+
+These are not a separate join type — they're a pattern built on top of LEFT or FULL OUTER JOIN. The goal is to find rows that have **no match** in the other table.
+
+### Find employees with no department
+```sql
+SELECT e.name
+FROM employees e
+LEFT JOIN departments d ON e.dept_id = d.dept_id
+WHERE d.dept_id IS NULL;
+-- Result: Carol, David
+```
+
+### Find departments with no employees
+```sql
+SELECT d.dept_name
+FROM departments d
+LEFT JOIN employees e ON e.dept_id = d.dept_id
+WHERE e.id IS NULL;
+-- Result: Finance
+```
+
+![useState diagram](./../public/Exclusion-Join.svg)
+
+
+> **How it works:** After a LEFT JOIN, rows with no match on the right side have `NULL` for all right-table columns. Filtering `WHERE right_table.id IS NULL` isolates exactly those unmatched rows.
+
+---
+
+## 8. JOIN Conditions & Pitfalls
+
+### Non-equi joins
+Joins don't have to use `=`. Any comparison operator works:
+```sql
+-- Find employees whose salary falls within a salary band
+SELECT e.name, sb.band_name
+FROM employees e
+JOIN salary_bands sb ON e.salary BETWEEN sb.min_sal AND sb.max_sal;
+```
+
+### Multiple conditions
+You can combine conditions with `AND`:
+```sql
+SELECT e.name, p.project_name
+FROM employees e
+JOIN assignments a ON e.id = a.employee_id AND a.active = 1
+JOIN projects p ON a.project_id = p.id;
+```
+
+### NULL behavior
+`NULL` never equals anything — not even another `NULL`. This matters in joins:
+```sql
+-- This join will NEVER match Carol (dept_id = NULL)
+ON e.dept_id = d.dept_id  -- NULL = anything → UNKNOWN → no match
+```
+
+### Performance tips
+- Always join on **indexed columns**. Foreign keys should have indexes.
+- Filter early: push `WHERE` conditions as close to the source tables as possible.
+- Avoid joining on expressions: `ON YEAR(e.hire_date) = 2020` cannot use an index. Instead, filter with `WHERE` after joining.
+
+---
+
+## 9. Quick Reference Summary
+
+| Join Type      | Returns                                            | NULL appears when                           |
+|----------------|----------------------------------------------------|---------------------------------------------|
+| INNER JOIN     | Only rows with a match in both tables              | Never (unmatched rows are dropped entirely) |
+| LEFT JOIN      | All rows from left + matched rows from right       | Right-side columns when left has no match   |
+| RIGHT JOIN     | Matched rows from left + all rows from right       | Left-side columns when right has no match   |
+| FULL OUTER     | All rows from both tables                          | Either side when the other has no match     |
+| CROSS JOIN     | Every combination (no ON condition)                | Never (all combinations are output)         |
+| SELF JOIN      | A table joined to itself via aliases               | Depends on whether LEFT or INNER is used    |
+| Anti-Join      | Rows that have NO match in the other table         | Used intentionally to find unmatched rows   |
+
+---
+
+## 10. Choosing the Right Join — Decision Guide
+
+```
+Do you need rows even when there's no match?
+│
+├─ No  →  INNER JOIN
+│          (strictest, only full matches)
+│
+└─ Yes →  Which side must always appear?
+           │
+           ├─ Left table only  →  LEFT JOIN  (most common)
+           │
+           ├─ Right table only →  RIGHT JOIN (or rewrite as LEFT JOIN)
+           │
+           └─ Both sides       →  FULL OUTER JOIN
+
+Are you working with one table that references itself?
+└─ Yes  →  SELF JOIN  (with LEFT or INNER depending on above)
+
+Do you need every possible combination?
+└─ Yes  →  CROSS JOIN  (use with caution on large tables)
+
+Do you need rows that do NOT match?
+└─ Yes  →  Anti-Join pattern  (LEFT JOIN + WHERE right.id IS NULL)
+```
+
+---
+
+> **Interview Tip:** When asked about joins, trace through the edge cases — `NULL` department, missing department ID, and a department with no employees. Interviewers specifically want to see you understand how `NULL` interacts with join conditions, not just the textbook definition.---
 
 ## 7. Indexing
 
